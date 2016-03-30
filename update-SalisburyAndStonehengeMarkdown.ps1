@@ -293,7 +293,7 @@ function update-HugoPageCorrectFootnotes {
   
   [string]$HugoPageAsString = get-content $HugoMarkdownFile
   
-  [string]$hugoPageAsString= $HugoPageAsString.replace($EndFootnoteTag, $StartFootnoteTag)
+  [string]$hugoPageAsString= $HugoPageAsString.replace($EndFootnoteTag, $StartFootnoteTag) 
 
   # [array]$HugoPageAsArray = $HugoPageAsString.split("<ref>")
   [array]$HugoPageAsArray = $HugoPageAsString -split "$StartFootNoteTag"
@@ -301,23 +301,37 @@ function update-HugoPageCorrectFootnotes {
   write-debug "Number of bits of text is $($HugoPageAsArray.length)"
   $BodyString = ""
   $FootNoteString = ""
+  write-host "0:" $HugoPageAsArray[0]
+  write-host "1:" $HugoPageAsArray[1]
+  write-host "2:" $HugoPageAsArray[2]
+  write-host "3:" $HugoPageAsArray[3]
+  write-host "4:" $HugoPageAsArray[4]
 
   for ($i = 0; $i -lt $HugoPageAsArray.length ; $i++)
   {
+      [string]$ConcatenateString = $HugoPageAsArray[$i]
       if ( $i % 2 -eq 0 )
       {
-          write-output "Hello, world $i"
-          $BodyString = "$BodyString$HugoPageAsArray[$i]"
+          write-debug "Thats even $i"
+          $BodyString = "$BodyString$ConcatenateString"
       }
       else
       {
-          write-output "Thats odd"
-          $BodyString = "$BodyString`[$(($i - 1) / 2)`]"
-          $FootnoteString = "`[$(($i - 1) / 2)`] $FootNoteString$HugoPageAsArray[$i]" 
+          write-debug "Thats odd $i"
+          $FootNoteNumber = 1 + (($i - 1 ) / 2) 
+          write-debug "`$FootnoteNumber: $FootNoteNumber"
+          $BodyString = "$BodyString`[$FootNoteNumber`]"
+          $FootnoteString = "$FootNoteString`[$FootNoteNumber`] $ConcatenateString"
+          # write-debug $FootnoteString
       }
+      # write-debug $HugoPageAsArray[$i]
   }
-  $BodyString
-  $FootNoteString
+  # write-debug "`$BodyString: $BodyString"
+  # write-debug "`$FootnoteString: $FootnoteString"
+  $ReconstitutedString = "$BodyString`n$FootNoteString"
+
+  remove-item D:\hugo\sites\example.com\content\on-this-day\Peare.md 
+  set-content -LiteralPath D:\hugo\sites\example.com\content\on-this-day\Peare.md -value $ReconstitutedString
 
 
   
