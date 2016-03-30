@@ -291,21 +291,15 @@ function update-HugoPageCorrectFootnotes {
 
   write-startfunction
   
-  [string]$HugoPageAsString = get-content $HugoMarkdownFile
+  $HugoPageAsString = get-content $HugoMarkdownFile -raw
   
-  [string]$hugoPageAsString= $HugoPageAsString.replace($EndFootnoteTag, $StartFootnoteTag) 
+  $hugoPageAsString= $HugoPageAsString.replace($EndFootnoteTag, $StartFootnoteTag) 
 
-  # [array]$HugoPageAsArray = $HugoPageAsString.split("<ref>")
   [array]$HugoPageAsArray = $HugoPageAsString -split "$StartFootNoteTag"
 
   write-debug "Number of bits of text is $($HugoPageAsArray.length)"
   $BodyString = ""
   $FootNoteString = ""
-  write-host "0:" $HugoPageAsArray[0]
-  write-host "1:" $HugoPageAsArray[1]
-  write-host "2:" $HugoPageAsArray[2]
-  write-host "3:" $HugoPageAsArray[3]
-  write-host "4:" $HugoPageAsArray[4]
 
   for ($i = 0; $i -lt $HugoPageAsArray.length ; $i++)
   {
@@ -322,13 +316,12 @@ function update-HugoPageCorrectFootnotes {
           write-debug "`$FootnoteNumber: $FootNoteNumber"
           $BodyString = "$BodyString`[$FootNoteNumber`]"
           $FootnoteString = "$FootNoteString`[$FootNoteNumber`] $ConcatenateString"
-          # write-debug $FootnoteString
       }
-      # write-debug $HugoPageAsArray[$i]
   }
-  # write-debug "`$BodyString: $BodyString"
-  # write-debug "`$FootnoteString: $FootnoteString"
+
   $ReconstitutedString = "$BodyString`n$FootNoteString"
+
+  # $ReconstitutedString = $hugoPageAsString
 
   remove-item D:\hugo\sites\example.com\content\on-this-day\Peare.md 
   set-content -LiteralPath D:\hugo\sites\example.com\content\on-this-day\Peare.md -value $ReconstitutedString
