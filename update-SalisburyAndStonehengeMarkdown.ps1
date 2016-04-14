@@ -314,8 +314,11 @@ function update-HugoPageCorrectFootnotes {
           write-debug "Thats odd $i"
           $FootNoteNumber = 1 + (($i - 1 ) / 2) 
           write-debug "`$FootnoteNumber: $FootNoteNumber"
-          $BodyString = "$BodyString`[$FootNoteNumber`]"
-          $FootnoteString = "$FootNoteString`[$FootNoteNumber`] $ConcatenateString"
+          $BodyString = "$BodyString`[$FootNoteNumber`]({{<ref `"`#$FootnoteNumber`" >}})"
+          $FootnoteString = @"
+$FootNoteString
+##### `[$FootnoteNunber`] $ConcatenateString
+"@
       }
   }
 
@@ -323,8 +326,8 @@ function update-HugoPageCorrectFootnotes {
 
   # $ReconstitutedString = $hugoPageAsString
 
-  remove-item D:\hugo\sites\example.com\content\on-this-day\Peare.md 
-  set-content -LiteralPath D:\hugo\sites\example.com\content\on-this-day\Peare.md -value $ReconstitutedString
+  remove-item D:\hugo\sites\example.com\content\on-this-day\$HugoMarkdownFile
+  set-content -LiteralPath $HugoMarkDownFile -value $ReconstitutedString
 
 
   
