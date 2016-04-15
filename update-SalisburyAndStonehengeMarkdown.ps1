@@ -314,10 +314,15 @@ function update-HugoPageCorrectFootnotes {
           write-debug "Thats odd $i"
           $FootNoteNumber = 1 + (($i - 1 ) / 2) 
           write-debug "`$FootnoteNumber: $FootNoteNumber"
-          $BodyString = "$BodyString`[$FootNoteNumber`]({{<ref `"`#$FootnoteNumber`" >}})"
+
+          $BodyString = @"
+$BodyString<a name="Source$FootnoteNumber" href="#Note$FootnoteNumber">[$FootNoteNumber]</a>
+"@
+
           $FootnoteString = @"
 $FootNoteString
-##### `[$FootnoteNunber`] $ConcatenateString
+
+<a  href="#Source$FootnoteNumber" name=`"Note$FootnoteNumber`">`[$FootNoteNumber`]</a> $ConcatenateString
 "@
       }
   }
